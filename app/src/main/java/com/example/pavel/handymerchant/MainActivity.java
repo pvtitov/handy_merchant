@@ -46,14 +46,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        RequestTask requestTask = new RequestTask(this);
+
         Button sellButton = findViewById(R.id.btn_sell);
-        sellButton.setOnClickListener(v -> Toast.makeText(MainActivity.this,
-                "Продано на " + ExchangeStub.INSTANCE.sell(mAssetAmount), Toast.LENGTH_SHORT)
-                .show());
+        sellButton.setOnClickListener(v -> {
+            Toast.makeText(MainActivity.this,
+                    "Продано на " + ExchangeStub.INSTANCE.sell(mAssetAmount), Toast.LENGTH_SHORT)
+                    .show();
+            requestTask.execute();
+        });
 
         Button buyButton = findViewById(R.id.btn_buy);
         buyButton.setOnClickListener(v -> Toast.makeText(MainActivity.this,
                 "Куплено на " + ExchangeStub.INSTANCE.buy(mAssetAmount), Toast.LENGTH_SHORT)
                 .show());
+
+
     }
 }
