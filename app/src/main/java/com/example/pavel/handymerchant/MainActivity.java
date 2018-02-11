@@ -53,7 +53,11 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this,
                     "Продано на " + ExchangeStub.INSTANCE.sell(mAssetAmount), Toast.LENGTH_SHORT)
                     .show();
-            requestTask.execute();
+            try {
+                requestTask.execute();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         });
 
         Button buyButton = findViewById(R.id.btn_buy);
