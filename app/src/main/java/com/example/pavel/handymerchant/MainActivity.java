@@ -1,70 +1,70 @@
 package com.example.pavel.handymerchant;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.IOException;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+/**
+ * Created by pavel on 12.02.18.
+ */
 
 public class MainActivity extends AppCompatActivity {
 
-    int mAssetAmount;
+    private static final String URL_RETURN_TICKER = "https://poloniex.com/public?command=returnTicker";
+
+    Ticker mTicker;
+    OkHttpClient mClient = new OkHttpClient();
+    GsonBuilder mBuilder = new GsonBuilder();
+    Gson mGson = mBuilder.create();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView loginTextView = findViewById(R.id.tv_login);
-        loginTextView.setText(ExchangeStub.INSTANCE.LOGIN);
+        TextView textView = findViewById(R.id.tv_ticker);
 
-        TextView balanceTextView = findViewById(R.id.tv_balance);
-        balanceTextView.setText(String.valueOf(ExchangeStub.INSTANCE.BALANCE));
-
-        TextView assetBoughtTextView = findViewById(R.id.tv_asset_bought);
-        assetBoughtTextView.setText(String.valueOf(ExchangeStub.INSTANCE.ASSET_BOUGHT));
-
-        TextView buyPriceTextView = findViewById(R.id.tv_buy_price);
-        buyPriceTextView.setText(String.valueOf(ExchangeStub.INSTANCE.PRICE_BUY));
-
-        TextView sellPriceTextView = findViewById(R.id.tv_sell_price);
-        sellPriceTextView.setText(String.valueOf(ExchangeStub.INSTANCE.PRICE_CELL));
-
-        Spinner assetAmountSpinner = findViewById(R.id.spn_asset_amount);
-        assetAmountSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mAssetAmount = Integer.parseInt(assetAmountSpinner.getSelectedItem().toString());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                mAssetAmount = 0;
-            }
+        Button buttonTicker = findViewById(R.id.btn_get_ticker);
+        buttonTicker.setOnClickListener(v -> {
+            Thread thread = new Thread(){
+                Request request = new Request.Builder().url(URL_RETURN_TICKER).build();
+                @Override
+                public void run() {
+                    try(Response response = mClient.newCall(request).execute()) {
+                        // Ограничение на количество запросов - не более 5 в секунду
+                        Thread.sleep(200);
+                        mTicker = mGson.fromJson(response.body().string(), Ticker.class);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (NullPointerException e){
+                        e.printStackTrace();
+                    }
+                    textView.post(() -> textView.setText(
+                            "Последняя цена: " + mTicker.getCurrencyPair().getLast() +
+                            "\nЦена покупки: " + mTicker.getCurrencyPair().getLowestAsk() +
+                            "\nЦена предложения: " + mTicker.getCurrencyPair().getHighestBid()
+                            )
+                    );
+                }
+            };
+            thread.start();
+            //RequestPublic requestTask = new RequestPublic("returnTicker", textView);
+            //requestTask.execute();
         });
-
-        RequestTask requestTask = new RequestTask(this);
-
-        Button sellButton = findViewById(R.id.btn_sell);
-        sellButton.setOnClickListener(v -> {
-            Toast.makeText(MainActivity.this,
-                    "Продано на " + ExchangeStub.INSTANCE.sell(mAssetAmount), Toast.LENGTH_SHORT)
-                    .show();
-            try {
-                requestTask.execute();
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            }
-        });
-
-        Button buyButton = findViewById(R.id.btn_buy);
-        buyButton.setOnClickListener(v -> Toast.makeText(MainActivity.this,
-                "Куплено на " + ExchangeStub.INSTANCE.buy(mAssetAmount), Toast.LENGTH_SHORT)
-                .show());
-
-
     }
 }

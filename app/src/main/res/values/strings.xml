@@ -4,6 +4,7 @@
     <string name="asset_bought">Количество купленного актива: </string>
     <string name="buy">Купить</string>
     <string name="sell">Продать</string>
+    <string name="ticker">Тикер</string>
     <string-array name="asset_amount">
         <item>0</item>
         <item>1</item>

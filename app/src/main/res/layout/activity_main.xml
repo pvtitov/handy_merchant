@@ -5,128 +5,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.pavel.handymerchant.MainActivity">
+    tools:context="com.example.pavel.handymerchant.HandTradeActivity">
 
-    <!-- Логин -->
+    <!-- Тикер -->
 
-    <TextView
-        android:id="@+id/tv_login"
+    <Button
+        android:id="@+id/btn_get_ticker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="italic"
-        android:textSize="@dimen/font_hints"
+        android:text="@string/ticker"
+        app:layout_constraintTop_toBottomOf="@id/tv_ticker"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+
         />
 
-    <!-- Баланс - свободные деньги -->
-
     <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margins"
-        android:text="@string/balance"
-        android:textStyle="italic"
-        android:textSize="@dimen/font_hints"
-        app:layout_constraintBottom_toTopOf="@id/tv_asset_bought"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/tv_balance"
-        app:layout_constraintTop_toBottomOf="@id/tv_login" />
-
-    <TextView
-        android:id="@+id/tv_balance"
+        android:id="@+id/tv_ticker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="@dimen/font_values"
-        app:layout_constraintBottom_toTopOf="@id/tv_asset_bought"
-        app:layout_constraintLeft_toRightOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_login" />
-
-    <!-- Баланс - купленный актив -->
-
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margins"
-        android:text="@string/asset_bought"
-        android:textStyle="italic"
-        android:textSize="@dimen/font_hints"
-        app:layout_constraintBottom_toTopOf="@id/tv_buy_price"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/tv_asset_bought"
-        app:layout_constraintTop_toBottomOf="@id/tv_balance" />
-
-    <TextView
-        android:id="@+id/tv_asset_bought"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="@dimen/font_values"
-        app:layout_constraintBottom_toTopOf="@id/tv_buy_price"
+        android:hint="@string/ticker"
+        app:layout_constraintBottom_toTopOf="@id/btn_get_ticker"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_balance" />
-
-    <!-- Цены и кнопки покупки/продажи -->
-
-    <TextView
-        android:id="@+id/tv_buy_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="@dimen/font_values"
-        app:layout_constraintBottom_toTopOf="@id/btn_buy"
-        app:layout_constraintLeft_toLeftOf="@id/btn_buy"
-        app:layout_constraintRight_toRightOf="@id/btn_buy"
-        app:layout_constraintTop_toBottomOf="@id/tv_asset_bought" />
-
-    <TextView
-        android:id="@+id/tv_sell_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="@dimen/font_values"
-        app:layout_constraintBottom_toTopOf="@id/btn_sell"
-        app:layout_constraintLeft_toLeftOf="@id/btn_sell"
-        app:layout_constraintRight_toRightOf="@id/btn_sell"
-        app:layout_constraintTop_toBottomOf="@id/tv_asset_bought" />
-
-    <Button
-        android:id="@+id/btn_buy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/buy_color"
-        android:text="@string/buy"
-        android:textStyle="italic"
-        android:textSize="@dimen/font_hints"
-        app:layout_constraintBottom_toTopOf="@id/spn_asset_amount"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/btn_sell"
-        app:layout_constraintTop_toBottomOf="@id/tv_buy_price" />
-
-    <Button
-        android:id="@+id/btn_sell"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/sell_color"
-        android:text="@string/sell"
-        android:textStyle="italic"
-        android:textSize="@dimen/font_hints"
-        app:layout_constraintBottom_toTopOf="@id/spn_asset_amount"
-        app:layout_constraintLeft_toRightOf="@id/btn_buy"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_sell_price" />
-
-    <!-- Количество актива по сделке -->
-
-    <Spinner
-        android:id="@+id/spn_asset_amount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:entries="@array/asset_amount"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_buy"/>
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
 </android.support.constraint.ConstraintLayout>
