@@ -1,8 +1,6 @@
 package com.example.pavel.handymerchant;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
@@ -23,12 +21,10 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String URL_RETURN_TICKER = "https://poloniex.com/public?command=returnTicker";
+    private static final String URL_CHART_DATA = "https://poloniex.com/public?command=returnChartData&currencyPair=USDT_BTC&start=1518393600&end=9999999999&period=900";
 
-    Ticker mTicker;
-    OkHttpClient mClient = new OkHttpClient();
-    GsonBuilder mBuilder = new GsonBuilder();
-    Gson mGson = mBuilder.create();
+    ChartData[] mChartData;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,34 +33,34 @@ public class MainActivity extends AppCompatActivity {
 
         TextView textView = findViewById(R.id.tv_ticker);
 
-        Button buttonTicker = findViewById(R.id.btn_get_ticker);
-        buttonTicker.setOnClickListener(v -> {
-            Thread thread = new Thread(){
-                Request request = new Request.Builder().url(URL_RETURN_TICKER).build();
+        Button button = findViewById(R.id.btn_go);
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(URL_CHART_DATA).build();
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        button.setOnClickListener(v -> {
+            Thread thread = new Thread() {
                 @Override
                 public void run() {
-                    try(Response response = mClient.newCall(request).execute()) {
+                    try (Response response = client.newCall(request).execute()) {
+                        mChartData = gson.fromJson(response.body().string(), ChartData[].class);
                         // Ограничение на количество запросов - не более 5 в секунду
                         Thread.sleep(200);
-                        mTicker = mGson.fromJson(response.body().string(), Ticker.class);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
-                    } catch (NullPointerException e){
+                    } catch (NullPointerException e) {
                         e.printStackTrace();
                     }
-                    textView.post(() -> textView.setText(
-                            "Последняя цена: " + mTicker.getCurrencyPair().getLast() +
-                            "\nЦена покупки: " + mTicker.getCurrencyPair().getLowestAsk() +
-                            "\nЦена предложения: " + mTicker.getCurrencyPair().getHighestBid()
-                            )
-                    );
+                    String editable = "";
+                    for (ChartData entry: mChartData) editable = editable + entry.getDate() + " : " + entry.getClose() + "\n";
+                    final String textToDisplay = editable;
+                    textView.post(() -> textView.setText(textToDisplay));
                 }
             };
+            thread.setPriority(Thread.MIN_PRIORITY);
             thread.start();
-            //RequestPublic requestTask = new RequestPublic("returnTicker", textView);
-            //requestTask.execute();
         });
     }
 }

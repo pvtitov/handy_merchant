@@ -1,0 +1,18 @@
+package com.example.pavel.handymerchant;
+
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
+
+/**
+ * Created by pavel on 13.02.18.
+ */
+
+public class EngineService extends Service {
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+}
