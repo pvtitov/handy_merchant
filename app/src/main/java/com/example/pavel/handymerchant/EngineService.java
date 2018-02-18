@@ -70,7 +70,7 @@ public class EngineService extends Service {
         thread.setPriority(Thread.MIN_PRIORITY);
         thread.start();
 
-        return super.onStartCommand(intent, flags, startId);
+        return Service.START_NOT_STICKY;
     }
 
     @Override
