@@ -65,6 +65,8 @@ public class EngineService extends Service {
                 DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.getDefault());
                 for (ChartData entry: chartData)
                     Log.d("happy", dateFormat.format(new java.util.Date(entry.getDate()*1000)) + " : " + entry.getClose() + "\n");
+
+                stopSelf();
             }
         };
         thread.setPriority(Thread.MIN_PRIORITY);
