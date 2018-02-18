@@ -7,7 +7,7 @@ public class ChartData {
 
     @SerializedName("date")
     @Expose
-    private int date;
+    private long date;
     @SerializedName("high")
     @Expose
     private double high;
@@ -30,7 +30,7 @@ public class ChartData {
     @Expose
     private double weightedAverage;
 
-    public int getDate() {
+    public long getDate() {
         return date;
     }
 
