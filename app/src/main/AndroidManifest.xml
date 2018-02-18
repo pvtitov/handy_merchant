@@ -20,7 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".EngineService" />
+        <service
+            android:name=".EngineService"
+            android:exported="false"
+            android:permission="@string/app_name"
+            android:enabled="true"/>
     </application>
 
 </manifest>
