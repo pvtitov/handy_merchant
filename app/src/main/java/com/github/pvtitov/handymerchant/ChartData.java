@@ -1,4 +1,4 @@
-package com.example.pavel.handymerchant;
+package com.github.pvtitov.handymerchant;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

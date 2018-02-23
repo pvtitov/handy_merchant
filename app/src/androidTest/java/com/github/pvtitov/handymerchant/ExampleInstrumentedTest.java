@@ -1,4 +1,4 @@
-package com.example.pavel.handymerchant;
+package com.github.pvtitov.handymerchant;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

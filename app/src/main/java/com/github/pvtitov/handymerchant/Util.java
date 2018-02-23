@@ -1,6 +1,4 @@
-package com.example.pavel.handymerchant;
-
-import java.util.Date;
+package com.github.pvtitov.handymerchant;
 
 /**
  * Created by pavel on 13.02.18.

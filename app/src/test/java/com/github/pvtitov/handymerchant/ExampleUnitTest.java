@@ -1,4 +1,4 @@
-package com.example.pavel.handymerchant;
+package com.github.pvtitov.handymerchant;
 
 import org.junit.Test;
 
