@@ -19,6 +19,7 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     TextView mTextView;
+    Intent mIntent;
     EngineBroadcastReceiver mBroadcastReceiver;
 
     @Override
@@ -30,14 +31,16 @@ public class MainActivity extends AppCompatActivity {
 
         Button buttonStart = findViewById(R.id.btn_start);
         buttonStart.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, EngineService.class);
-            startService(intent);
+            mIntent = new Intent(MainActivity.this, EngineService.class);
+            startService(mIntent);
         });
 
         Button buttonStop = findViewById(R.id.btn_stop);
         buttonStop.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, EngineService.class);
-            stopService(intent);
+            if (mIntent != null) {
+                stopService(mIntent);
+                mIntent = null;
+            }
         });
 
         registerBroadcastReceiver();

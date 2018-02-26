@@ -24,12 +24,21 @@ class Util {
     }
 
 
-    // Вспомогательный класс для построения URL запросов к серверу брокера
+    // Вспомогательный метод для построения URL запросов к серверу брокера
     static String buildUrl(CurrencyPair currencyPair, long startUTC, long stopUTC, Period period){
         return "https://poloniex.com/public?command=returnChartData"
                 + "&currencyPair=" + currencyPair
                 + "&start=" + startUTC
                 + "&end=" + stopUTC
                 + "&period=" + period.getValue();
+    }
+
+
+    static void timeOut() {
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 }
