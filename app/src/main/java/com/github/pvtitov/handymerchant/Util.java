@@ -1,10 +1,15 @@
 package com.github.pvtitov.handymerchant;
 
+import java.util.Date;
+
 /**
  * Created by pavel on 13.02.18.
  */
 
 class Util {
+
+    static final int ALLOWED_FREQUENCY = 5;
+    static final long UTC_01_01_2018 = 1514764800000L;
 
     enum Period {
         FIVE_MINUTES(300),
@@ -36,9 +41,17 @@ class Util {
 
     static void timeOut() {
         try {
-            Thread.sleep(200);
+            Thread.sleep(1000/ALLOWED_FREQUENCY);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    static int nonce() {
+        return (int) ((new Date().getTime() - UTC_01_01_2018)/(1000/ALLOWED_FREQUENCY));
+    }
+
+    static long currentTimeUTC(){
+        return new Date().getTime()/1000;
     }
 }

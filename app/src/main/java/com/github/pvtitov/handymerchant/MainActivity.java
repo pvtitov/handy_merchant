@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
         mTextView = findViewById(R.id.text_view);
 
+
+
         Button buttonStart = findViewById(R.id.btn_start);
         buttonStart.setOnClickListener(v -> {
             mIntent = new Intent(MainActivity.this, EngineService.class);
