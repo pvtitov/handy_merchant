@@ -13,12 +13,12 @@ import javax.crypto.spec.SecretKeySpec;
  * Created by pavel on 13.02.18.
  */
 
-class Util {
+public class Util {
 
     private static final int ALLOWED_FREQUENCY = 5;
     private static final long UTC_01_01_2018 = 1514764800000L;
 
-    enum Period {
+    public enum Period {
         FIVE_MINUTES(300),
         FIFTEEN_MINUTES(900),
         HALF_AN_HOUR(1800),
@@ -35,21 +35,12 @@ class Util {
         USDT, BTC
     }
 
-    enum CurrencyPair {
+    public enum CurrencyPair {
         USDT_BTC
     }
 
 
-    // Вспомогательный метод для построения URL запросов к серверу брокера
-    static String buildUrl(CurrencyPair currencyPair, long startUTC, long stopUTC, Period period){
-        return "https://poloniex.com/public?command=returnChartData"
-                + "&currencyPair=" + currencyPair
-                + "&start=" + startUTC
-                + "&end=" + stopUTC
-                + "&period=" + period.getValue();
-    }
-
-
+    // Приостановить поток с целью не нарушить требование брокера к частоте запросов
     static void timeOut() {
         try {
             Thread.sleep(1000/ALLOWED_FREQUENCY);
@@ -59,17 +50,20 @@ class Util {
     }
 
 
-    static int nonce() {
+    // The nonce parameter is an integer which must always be greater than the previous nonce used. Used for Trading API.
+    public static int nonce() {
         return (int) ((new Date().getTime() - UTC_01_01_2018)/(1000/ALLOWED_FREQUENCY));
     }
 
 
-    static long currentTimeUTC(){
+    // Количество секунд с 1 января 1970
+    public static long currentTimeUTC(){
         return new Date().getTime()/1000;
     }
 
 
-    static String signHmacSha512(String data, String secret) throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
+    // Подписание алгоритмом HMAC_SHA512
+    public static String signHmacSha512(String data, String secret) throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
         final String HMAC_SHA512 = "HmacSHA512";
         SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes("UTF-8"), HMAC_SHA512);
         Mac mac = Mac.getInstance(HMAC_SHA512);

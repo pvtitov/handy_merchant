@@ -3,7 +3,7 @@ package com.github.pvtitov.handymerchant.response_model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ChartData {
+public class ChartDataWrapper {
 
     @SerializedName("date")
     @Expose
