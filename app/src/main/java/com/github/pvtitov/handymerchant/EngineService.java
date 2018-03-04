@@ -9,6 +9,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -28,7 +31,9 @@ public class EngineService extends IntentService {
 
     public static final String ACTION_ENGINE_SERVICE = "com.github.pvtitov.handymerchant.RESPONSE";
     public static final String EXTRA_INTENT_RESPONSE = "extra_intent_response";
-    public static final MediaType MEDIA_TYPE = MediaType.parse("application/x-www-form-urlencoded; charset=UTF-8");
+    private static final String API_KEY = "QES1GZKE-VEC8R3XR-WB2WRDYT-ZYEW4Z9K";
+    private static final String SECRET = "9ffdb5b8374eef265a73c33030701c3afd2bd20db0c590654af29ebbbeb556eb6b1195a117221c79e8aca5641039b6033d56a86e1a18f5d3284162906104cf5b";
+    public static final MediaType MEDIA_TYPE = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
 
     boolean mIsStopped;
 
@@ -40,13 +45,8 @@ public class EngineService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
 
-        OkHttpClient client = new OkHttpClient();
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
-
-
         //broadcast(requestChartData(client, gson));
-        broadcast(requestBalance(client, gson) + "\n" + requestChartData(client, gson));
+        broadcast(requestBalance());
 
         // Ограничение Poloniex по частоте запросов
         Util.timeOut();
@@ -61,7 +61,7 @@ public class EngineService extends IntentService {
     }
 
 
-    private String requestChartData(OkHttpClient client, Gson gson) {
+    private String requestChartData() {
 
         Request request = new Request.Builder().url(
                 Util.buildUrl(Util.CurrencyPair.USDT_BTC,
@@ -70,6 +70,10 @@ public class EngineService extends IntentService {
                         Util.Period.FOUR_HOURS
                 )).build();
 
+
+        OkHttpClient client = new OkHttpClient();
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
 
         ChartData[] chartData = new ChartData[0];
         try (Response response = client.newCall(request).execute()) {
@@ -93,21 +97,31 @@ public class EngineService extends IntentService {
     }
 
 
-    private String requestBalance(OkHttpClient client, Gson gson) {
-        //TODO post-request
-        //Key, Sign, https://poloniex.com/tradingApi, command=returnBalances
-        //nonce - an integer which must always be greater than the previous nonce used
-        Headers headers = Headers.of("Key=Your API key",
-                "Sign=The query's POST data signed by your key's \"secret\" according to the HMAC-SHA512 method");
+    private String requestBalance() {
+
+        OkHttpClient client = new OkHttpClient();
+        String parameters = "nonce=" + Util.nonce() + "&command=returnBalances";
         RequestBody requestBody = RequestBody.create(MEDIA_TYPE,
-                "nonce=" + Util.nonce() + "command=returnBalances");
-        Request request = new Request.Builder().url("https://poloniex.com/tradingApi").post(requestBody).build();
+                parameters);
+        String signedRequestBody = "not_singed";
+        try {
+            signedRequestBody = Util.signHmacSha512(parameters, SECRET);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        Headers headers = Headers.of("Key", API_KEY,
+                "Sign", signedRequestBody);
+        Request request = new Request.Builder().url("https://poloniex.com/tradingApi").headers(headers).post(requestBody).build();
         try (Response response = client.newCall(request).execute()) {
             return response.body().string();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return "request failed";
     }
 
 

@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String resultMessage = intent.getStringExtra(EngineService.EXTRA_INTENT_RESPONSE);
             mTextView.setText(resultMessage);
-            Log.d("happy", "получил: \n" + resultMessage);
         }
     }
 }
