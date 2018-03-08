@@ -1,9 +1,9 @@
-package com.github.pvtitov.handymerchant.response_model;
+package com.github.pvtitov.handymerchant.response_contracts;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ChartDataWrapper {
+public class ChartDataContract {
 
     @SerializedName("date")
     @Expose

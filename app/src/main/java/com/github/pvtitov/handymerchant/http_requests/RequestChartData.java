@@ -1,7 +1,7 @@
-package com.github.pvtitov.handymerchant.http_queries;
+package com.github.pvtitov.handymerchant.http_requests;
 
 import com.github.pvtitov.handymerchant.Util;
-import com.github.pvtitov.handymerchant.response_model.ChartDataWrapper;
+import com.github.pvtitov.handymerchant.response_contracts.ChartDataContract;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class RequestChartData{
         mGson = gson;
     }
 
-    private ChartDataWrapper[] makeRequest() throws IOException {
+    private ChartDataContract[] makeRequest() throws IOException {
         Request request = new okhttp3.Request.Builder().url(
                 buildUrl(Util.CurrencyPair.USDT_BTC,
                         Util.currentTimeUTC() - 60*60*24*5,
@@ -35,7 +35,7 @@ public class RequestChartData{
                         Util.Period.HALF_AN_HOUR
                 )).build();
         Response response = mClient.newCall(request).execute();
-        return mGson.fromJson(response.body().string(), ChartDataWrapper[].class);
+        return mGson.fromJson(response.body().string(), ChartDataContract[].class);
     }
 
     // Вспомогательный метод для построения URL запросов к серверу брокера
@@ -50,7 +50,7 @@ public class RequestChartData{
 
     @Override
     public String toString(){
-        ChartDataWrapper[] chartData = new ChartDataWrapper[0];
+        ChartDataContract[] chartData = new ChartDataContract[0];
         try {
             chartData = makeRequest();
         } catch (IOException e) {
@@ -58,7 +58,7 @@ public class RequestChartData{
         }
         String message = "";
         DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.getDefault());
-        for (ChartDataWrapper entry: chartData) {
+        for (ChartDataContract entry: chartData) {
             message += dateFormat.format(new java.util.Date(entry.getDate()*1000)) + " : " + entry.getClose() + "\n";
         }
         return message;

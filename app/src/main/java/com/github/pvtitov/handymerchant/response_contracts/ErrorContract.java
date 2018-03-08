@@ -1,9 +1,9 @@
-package com.github.pvtitov.handymerchant.response_model;
+package com.github.pvtitov.handymerchant.response_contracts;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ErrorWrapper {
+public class ErrorContract {
 
     @SerializedName("error")
     @Expose

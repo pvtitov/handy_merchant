@@ -4,8 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
-import com.github.pvtitov.handymerchant.http_queries.RequestBalance;
-import com.github.pvtitov.handymerchant.http_queries.RequestChartData;
+import com.github.pvtitov.handymerchant.http_requests.RequestBalances;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -35,8 +34,8 @@ public class EngineService extends IntentService {
         mClient = new OkHttpClient();
         mGson = new GsonBuilder().create();
 
-        broadcast(new RequestChartData(mClient, mGson).toString());
-        //broadcast(new RequestBalance(mClient, mGson).toString());
+        //broadcast(new RequestChartData(mClient, mGson).toString());
+        broadcast(new RequestBalances(mClient, mGson).toString());
 
         // Ограничение Poloniex по частоте запросов
         Util.timeOut();

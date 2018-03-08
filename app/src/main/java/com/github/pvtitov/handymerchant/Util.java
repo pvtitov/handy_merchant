@@ -1,5 +1,7 @@
 package com.github.pvtitov.handymerchant;
 
+import android.util.Log;
+
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -16,7 +18,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class Util {
 
     private static final int ALLOWED_FREQUENCY = 5;
-    private static final long UTC_01_01_2018 = 1514764800000L;
+    private static final long NONCE_REDUCER = 1520221402943L;
 
     public enum Period {
         FIVE_MINUTES(300),
@@ -31,9 +33,6 @@ public class Util {
         public int getValue() {return period;}
     }
 
-    enum Currency {
-        USDT, BTC
-    }
 
     public enum CurrencyPair {
         USDT_BTC
@@ -52,7 +51,7 @@ public class Util {
 
     // The nonce parameter is an integer which must always be greater than the previous nonce used. Used for Trading API.
     public static int nonce() {
-        return (int) ((new Date().getTime() - UTC_01_01_2018)/(1000/ALLOWED_FREQUENCY));
+        return (int) (new Date().getTime() - NONCE_REDUCER);
     }
 
 
