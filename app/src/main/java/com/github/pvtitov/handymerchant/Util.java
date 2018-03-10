@@ -1,6 +1,5 @@
 package com.github.pvtitov.handymerchant;
 
-import android.util.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;

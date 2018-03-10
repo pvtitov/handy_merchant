@@ -1,7 +1,10 @@
-package com.github.pvtitov.handymerchant.http_requests;
+package com.github.pvtitov.handymerchant.http;
 
+import android.content.Context;
+
+import com.github.pvtitov.handymerchant.R;
 import com.github.pvtitov.handymerchant.Util;
-import com.github.pvtitov.handymerchant.response_contracts.ChartDataContract;
+import com.github.pvtitov.handymerchant.contracts.ChartDataContract;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -17,34 +20,28 @@ import okhttp3.Response;
  * Created by pavel on 04.03.18.
  */
 
-public class RequestChartData{
+public class PoloniexPublicAPI {
 
     private OkHttpClient mClient;
     private Gson mGson;
+    private Context mContext;
 
-    public RequestChartData(OkHttpClient client, Gson gson) {
+    public PoloniexPublicAPI(Context context, OkHttpClient client, Gson gson) {
+        mContext = context;
         mClient = client;
         mGson = gson;
     }
 
-    private ChartDataContract[] makeRequest() throws IOException {
+    public ChartDataContract[] returnChartData() throws IOException {
         Request request = new okhttp3.Request.Builder().url(
-                buildUrl(Util.CurrencyPair.USDT_BTC,
+                mContext.getString(R.string.chart_data_url,
+                        Util.CurrencyPair.USDT_BTC.name(),
                         Util.currentTimeUTC() - 60*60*24*5,
                         Util.currentTimeUTC(),
-                        Util.Period.HALF_AN_HOUR
-                )).build();
+                        Util.Period.FIVE_MINUTES.getValue())
+                ).build();
         Response response = mClient.newCall(request).execute();
         return mGson.fromJson(response.body().string(), ChartDataContract[].class);
-    }
-
-    // Вспомогательный метод для построения URL запросов к серверу брокера
-    private String buildUrl(Util.CurrencyPair currencyPair, long startUTC, long stopUTC, Util.Period period){
-        return "https://poloniex.com/public?command=returnChartData"
-                + "&currencyPair=" + currencyPair
-                + "&start=" + startUTC
-                + "&end=" + stopUTC
-                + "&period=" + period.getValue();
     }
 
 
@@ -52,7 +49,7 @@ public class RequestChartData{
     public String toString(){
         ChartDataContract[] chartData = new ChartDataContract[0];
         try {
-            chartData = makeRequest();
+            chartData = returnChartData();
         } catch (IOException e) {
             e.printStackTrace();
         }

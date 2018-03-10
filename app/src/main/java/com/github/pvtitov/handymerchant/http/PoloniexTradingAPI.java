@@ -1,7 +1,7 @@
-package com.github.pvtitov.handymerchant.http_requests;
+package com.github.pvtitov.handymerchant.http;
 
 import com.github.pvtitov.handymerchant.Util;
-import com.github.pvtitov.handymerchant.response_contracts.CurrenciesContract;
+import com.github.pvtitov.handymerchant.contracts.CurrenciesContract;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -21,7 +21,7 @@ import okhttp3.Response;
  * Created by pavel on 04.03.18.
  */
 
-public class RequestBalances {
+public class PoloniexTradingAPI {
     private static final String API_KEY = "A7QCAN3T-DSEKLUS9-AE1J4XJM-JF02C0CD";
     private static final String SECRET = "072f18275685e4bebdf0d8a8b85b93d814889f3fabe520348f63ae3e050355cd7ecde3ea5acdfe3de5c1e4b26fd399a89817577f009de1ae9f46e48012dfa33c";
     private static final MediaType MEDIA_TYPE = MediaType.parse("application/x-www-form-urlencoded; charset=utf-8");
@@ -29,7 +29,7 @@ public class RequestBalances {
     private OkHttpClient mClient;
     private Gson mGson;
 
-    public RequestBalances(OkHttpClient client, Gson gson) {
+    public PoloniexTradingAPI(OkHttpClient client, Gson gson) {
         mClient = client;
         mGson = gson;
     }

@@ -1,4 +1,4 @@
-package com.github.pvtitov.handymerchant.response_contracts;
+package com.github.pvtitov.handymerchant.contracts;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
