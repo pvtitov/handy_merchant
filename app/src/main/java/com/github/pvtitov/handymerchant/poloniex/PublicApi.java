@@ -1,4 +1,4 @@
-package com.github.pvtitov.handymerchant.http;
+package com.github.pvtitov.handymerchant.poloniex;
 
 import android.content.Context;
 
@@ -17,13 +17,13 @@ import okhttp3.Response;
  * Created by pavel on 04.03.18.
  */
 
-public class PoloniexPublicAPI {
+public class PublicApi {
 
     private OkHttpClient mClient;
     private Gson mGson;
     private Context mContext;
 
-    public PoloniexPublicAPI(Context context, OkHttpClient client, Gson gson) {
+    public PublicApi(Context context, OkHttpClient client, Gson gson) {
         mContext = context;
         mClient = client;
         mGson = gson;

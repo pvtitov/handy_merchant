@@ -4,13 +4,17 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
-import com.github.pvtitov.handymerchant.http.PoloniexTradingAPI;
-import com.github.pvtitov.handymerchant.http.PoloniexPublicAPI;
+import com.github.pvtitov.handymerchant.contracts.CurrenciesContract;
+import com.github.pvtitov.handymerchant.poloniex.TradingApi;
+import com.github.pvtitov.handymerchant.poloniex.PublicApi;
 import com.github.pvtitov.handymerchant.contracts.ChartDataContract;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 import okhttp3.OkHttpClient;
 
@@ -51,7 +55,7 @@ public class EngineService extends IntentService {
         //TODO 1. Скачать данные
         ChartDataContract[] chartDataContracts = new ChartDataContract[0];
         try {
-            chartDataContracts = new PoloniexPublicAPI(EngineService.this, client, gson)
+            chartDataContracts = new PublicApi(EngineService.this, client, gson)
                     .returnChartData(
                             Util.CurrencyPair.USDT_BTC,
                             Util.Period.DAY,
@@ -70,10 +74,7 @@ public class EngineService extends IntentService {
             ChartDataContract lastData = chartDataContracts[chartDataContracts.length - 1];
             ChartDataContract oneStepBeforeLastData = chartDataContracts[chartDataContracts.length - 2];
 
-            //==>
             broadcast("Предпоследняя: " + oneStepBeforeLastData.getClose() + "\nПоследняя: " + lastData.getClose());
-            Util.timeOut();
-            //<==
 
             if (lastData.getClose() - oneStepBeforeLastData.getClose() > 0) {
                 direction = BUY;
@@ -87,8 +88,23 @@ public class EngineService extends IntentService {
         }
 
         //TODO 3. Совершить сделку
-
-        broadcast(new PoloniexTradingAPI(EngineService.this, client, gson).toString() + "\n" + direction);
+        try {
+            Map<String, String> balancies = new TradingApi(EngineService.this, client, gson).returnBalances();
+            if (TradingApi.isError(balancies)) {
+                broadcast(TradingApi.printError(balancies));
+                Util.timeOut();
+            } else {
+                String currency = CurrenciesContract.USDT.name();
+                broadcast(currency + ": " + balancies.get(currency) + "\n" + direction);
+                Util.timeOut();
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
