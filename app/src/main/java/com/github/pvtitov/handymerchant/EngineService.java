@@ -51,7 +51,12 @@ public class EngineService extends IntentService {
         //TODO 1. Скачать данные
         ChartDataContract[] chartDataContracts = new ChartDataContract[0];
         try {
-            chartDataContracts = new PoloniexPublicAPI(EngineService.this, client, gson).returnChartData();
+            chartDataContracts = new PoloniexPublicAPI(EngineService.this, client, gson)
+                    .returnChartData(
+                            Util.CurrencyPair.USDT_BTC,
+                            Util.Period.DAY,
+                            100
+                    );
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -83,7 +88,7 @@ public class EngineService extends IntentService {
 
         //TODO 3. Совершить сделку
 
-        broadcast(new PoloniexTradingAPI(client, gson).toString() + "\n" + direction);
+        broadcast(new PoloniexTradingAPI(EngineService.this, client, gson).toString() + "\n" + direction);
     }
 
     @Override

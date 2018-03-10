@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">Handy Merchant</string>
-    <string name="chart_data_url">"https://poloniex.com/public?command=returnChartData&amp;currencyPair=%1$s&amp;start=%2$d&amp;end=%3$d&amp;period=%4$d"</string>
+    <string name="url_poloniex_trading">"https://poloniex.com/tradingApi"</string>
+    <string name="url_poloniex_chart_data">
+        "https://poloniex.com/public?"
+        + "command=returnChartData&amp;"
+        + "currencyPair=%1$s&amp;"
+        + "start=%2$d&amp;"
+        + "end=%3$d&amp;"
+        + "period=%4$d"
+    </string>
 </resources>

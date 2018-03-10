@@ -1,5 +1,8 @@
 package com.github.pvtitov.handymerchant.http;
 
+import android.content.Context;
+
+import com.github.pvtitov.handymerchant.R;
 import com.github.pvtitov.handymerchant.Util;
 import com.github.pvtitov.handymerchant.contracts.CurrenciesContract;
 import com.google.gson.Gson;
@@ -28,34 +31,42 @@ public class PoloniexTradingAPI {
 
     private OkHttpClient mClient;
     private Gson mGson;
+    private Context mContext;
 
-    public PoloniexTradingAPI(OkHttpClient client, Gson gson) {
+    public PoloniexTradingAPI(Context context, OkHttpClient client, Gson gson) {
+        mContext = context;
         mClient = client;
         mGson = gson;
     }
 
 
-    private Map<String, String> makeRequest() throws NoSuchAlgorithmException, InvalidKeyException, IOException {
-        String parameters = "nonce=" + Util.nonce() + "&command=returnBalances";
+    public Map<String, String> returnBalances() throws NoSuchAlgorithmException, InvalidKeyException, IOException {
+        Response response = abstractPostRequest("command=returnBalances");
+        return mGson.fromJson(response.body().string(), new TypeToken<Map<String, String>>(){}.getType());
+    }
+
+
+    private Response abstractPostRequest(String apiMethod) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
+        String parameters = "nonce=" + Util.nonce() + "&" + apiMethod;
         RequestBody requestBody = RequestBody.create(MEDIA_TYPE, parameters);
         String signedRequestBody = Util.signHmacSha512(parameters, SECRET);
         Headers headers = Headers.of(
                 "Key", API_KEY,
                 "Sign", signedRequestBody);
         Request request = new okhttp3.Request.Builder()
-                .url("https://poloniex.com/tradingApi")
+                .url(mContext.getString(R.string.url_poloniex_trading))
                 .headers(headers)
                 .post(requestBody)
                 .build();
-        Response response = mClient.newCall(request).execute();
-        return mGson.fromJson(response.body().string(), new TypeToken<Map<String, String>>(){}.getType());
+        return mClient.newCall(request).execute();
     }
+
 
     @Override
     public String toString() {
         String message = "";
         try {
-            Map<String, String> balances = makeRequest();
+            Map<String, String> balances = returnBalances();
 
             for (CurrenciesContract currency: CurrenciesContract.values())
                 message += currency.name() + ": " + balances.get(currency.name()) + "\n";
